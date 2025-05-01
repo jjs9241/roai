@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { STLLoader } from "three-stdlib";
+import { STLLoader, OrbitControls } from "three-stdlib";
 
 const STLViewer: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -17,6 +17,10 @@ const STLViewer: React.FC = () => {
     const height = mountRef.current?.clientHeight || 400;
     renderer.setSize(width, height);
     mountRef.current?.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
 
     const ambientLight = new THREE.AmbientLight(0x888888);
     scene.add(ambientLight);
@@ -39,10 +43,12 @@ const STLViewer: React.FC = () => {
 
     const animate = () => {
       requestAnimationFrame(animate);
+      controls.update();
       renderer.render(scene, camera);
     };
 
     return () => {
+      controls.dispose();
       mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);
