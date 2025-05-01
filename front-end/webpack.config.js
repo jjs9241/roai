@@ -26,7 +26,9 @@ module.exports = {
     }),
   ],
   devServer: {
-    static: "./dist",
+    static: {
+      directory: path.resolve(__dirname, "public"), // 👈 반드시 명시
+    },
     port: 3000,
     open: true,
     hot: true,
